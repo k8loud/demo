@@ -6,7 +6,7 @@ dialect "mvel"
 rule "test1"
     dialect "mvel"
     when
-        cup_time_m : Metric(
+        test1 : Metric(
             queryTag == "greater-than-zero-always-triggers",
             labels["code"] == 200,
             sum : value
