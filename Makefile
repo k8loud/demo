@@ -4,7 +4,6 @@ define CONFIG_MAP_HEADER
 apiVersion: v1
 kind: ConfigMap
 metadata:
-metadata:
   name: rules
   namespace: themis-executor
 data:
