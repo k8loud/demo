@@ -5,7 +5,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
 metadata:
-  name: themis-executor-rules-cm
+  name: rules
   namespace: themis-executor
 data:
   rules: |
