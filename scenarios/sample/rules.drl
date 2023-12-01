@@ -1,17 +1,8 @@
-import io.github.hephaestusmetrics.model.metrics.Metric;
-import java.util.List
-
 dialect "mvel"
 
-rule "test1"
-    dialect "mvel"
-    when
-        test1 : Metric(
-            queryTag == "greater-than-zero-always-triggers",
-            labels["code"] == 200,
-            sum : value
-        )
-        eval(sum > 0)
-    then
-        System.out.println("test1 triggered");
+rule "test"
+	when
+		eval( true )
+  	then
+		System.out.println("test rule triggered");
 end

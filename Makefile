@@ -7,7 +7,7 @@ metadata:
   name: rules
   namespace: themis-executor
 data:
-  rules: |
+  rules.drl: |
 endef
 export CONFIG_MAP_HEADER
 
