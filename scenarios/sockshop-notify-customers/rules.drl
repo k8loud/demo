@@ -1,0 +1,58 @@
+import io.github.hephaestusmetrics.model.metrics.Metric;
+import java.util.List
+import org.apache.http.util.EntityUtils
+import org.apache.http.HttpResponse
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder;
+import org.k8loud.executor.actions.cnapp.sockshop.NotifyCustomersAction;
+
+global org.k8loud.executor.model.ActionList actions;
+global org.k8loud.executor.drools.UsableServices usableServices;
+
+dialect "mvel"
+
+declare CatalogueItem
+    id: String
+    name: String
+    description: String
+    imageUrl: String[]
+    price: float
+    count: int
+    tag: String[]
+end
+
+rule "most-popular-this-week"
+	when
+		catalogueQueries : Metric(
+			queryTag == "catalogue-queries",
+			queriedCount : value
+		)
+		eval(usableServices.getCronCheckerService().checkPatternForSession("0 56 18 ? * SAT *"))
+	then
+		System.out.println("Processing 'most-popular-this-week'...");
+		sockShopUrl = "http://" + catalogueQueries.getLabels().get("instance");
+		urlSuplement = catalogueQueries.getLabels().get("route").substring(1);
+
+        response = usableServices.getHttpService().createSession().doGet(sockShopUrl, urlSuplement);
+
+		itemJSON = EntityUtils.toString(response.getEntity());
+		Gson gson = new GsonBuilder().create();
+		CatalogueItem item = gson.fromJson(itemJSON, CatalogueItem.class);
+
+		content = String.format("Dear customer!%n%nThis week's most popular product is%n%n" +
+			"%-14s: %s%n%-14s: %s%n%-14s: %.2f $%n%-14s: %s",
+			"name", ((CatalogueItem)item).getName(),
+			"description", ((CatalogueItem)item).getDescription(),
+			"price", ((CatalogueItem)item).getPrice(),
+			"in stock", ((CatalogueItem)item).getCount());
+
+		actions.add(NotifyCustomersAction.builder()
+			.sockShopService(usableServices.getSockShopService())
+			.applicationUrl(sockShopUrl)
+			.senderDisplayName("SockShop Marketing")
+			.subject("Most popular item this week")
+			.content(content)
+			.build());
+
+		System.out.println("...Processed 'most-popular-this-week'");
+end
