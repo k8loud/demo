@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.k8loud</groupId>
             <artifactId>themis-executor</artifactId>
-            <version>0.0.3.1</version>
+            <version>0.0.3.1-scenario-sockshop-notify-customers</version>
         </dependency>
     </dependencies>
 </project>
