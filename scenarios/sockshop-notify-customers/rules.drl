@@ -24,15 +24,15 @@ declare CatalogueItem
     tag: String[]
 end
 
-rule "most-popular-this-week"
+rule "most-popular-this-hour"
 	when
 		catalogueQueries : Metric(
-			queryTag == "catalogue-queries-top1-7d",
+			queryTag == "catalogue-queries-top1-1h",
 			queriedCount : value
 		)
-		eval(usableServices.getCronCheckerService().checkPatternForSession("0 0 16 ? * SUN *"))
+		eval(usableServices.getCronCheckerService().checkPatternForSession("0 0 * ? * * *"))
 	then
-		System.out.println("Processing 'most-popular-this-week'...");
+		System.out.println("Processing 'most-popular-this-hour'...");
 
 		sockShopUrl = "http://" + catalogueQueries.getLabels().get("instance");
 		urlSuplement = catalogueQueries.getLabels().get("route").substring(1);
@@ -43,7 +43,7 @@ rule "most-popular-this-week"
 		item = new GsonBuilder().create().
 			fromJson(itemJSON, CatalogueItem.class);
 
-		content = String.format("Dear customer!%n%nThis week's most popular product has been viewed %.0f times" +
+		content = String.format("Dear customer!%n%nThis hour's most popular product has been viewed %.0f times" +
 			", more details:%n%n%-14s: %s%n%-14s: %s%n%-14s: %.2f $%n%-14s: %s",
 			queriedCount,
 			"name", ((CatalogueItem)item).getName(),
@@ -61,10 +61,10 @@ rule "most-popular-this-week"
 			.sockShopService(usableServices.getSockShopService())
 			.applicationUrl(sockShopUrl)
 			.senderDisplayName("SockShop Marketing")
-			.subject("Most popular item this week")
+			.subject("Most popular item this hour")
 			.content(content)
 			.imagesUrls(imagesUrls)
 			.build());
 
-		System.out.println("...Processed 'most-popular-this-week'");
+		System.out.println("...Processed 'most-popular-this-hour'");
 end

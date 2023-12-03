@@ -1,19 +1,21 @@
 #!/bin/bash
 
 URL_BASE="http://localhost:8082/catalogue"
-CYCLES=100
-MIN_REQ=10
-MAX_REQ=200
+CYCLES=1000
+MIN_REQ=0
+MAX_REQ=5
 ITEM_SLEEP_S_MIN=0
-ITEM_SLEEP_S_MAX=5
+ITEM_SLEEP_S_MAX=1
 CYCLE_SLEEP_S_MIN=0
-CYCLE_SLEEP_S_MAX=15
-ITEM_IDS=("03fef6ac-1896-4ce8-bd69-b798f85c6e0b"
-  "510a0d7e-8e83-4193-b483-e27e09ddc34d"
+CYCLE_SLEEP_S_MAX=2
+ITEM_IDS=(
   "zzz4f044-b040-410d-8ead-4de0446aec7e"
+  "03fef6ac-1896-4ce8-bd69-b798f85c6e0b"
+  "510a0d7e-8e83-4193-b483-e27e09ddc34d"
   "d3588630-ad8e-49df-bbd7-3167f7efb246"
   "819e1fbf-8b7e-4f6d-811f-693534916a8b"
-  "808a2de1-1aaa-4c25-a9b9-6612e8f29a38")
+  "808a2de1-1aaa-4c25-a9b9-6612e8f29a38"
+)
 
 function rand_in_range {
   MIN="$1"
@@ -26,8 +28,7 @@ for c in $(seq 1 $CYCLES); do
   echo "Cycle $c / $CYCLES"
   for i in ${!ITEM_IDS[@]}; do
     item_id=${ITEM_IDS[$i]}
-    req_cnt=$(rand_in_range $MIN_REQ $MAX_REQ)
-    echo "$req_cnt"
+    req_cnt=$(($(rand_in_range $MIN_REQ $MAX_REQ) * ${MULTIPLIERS[$i]}))
     url="$URL_BASE/$item_id"
     echo "Sending GET $url $req_cnt times"
     for r in $(seq 1 $req_cnt); do
