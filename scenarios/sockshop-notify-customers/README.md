@@ -24,8 +24,7 @@ The metric is used in the `most-popular-this-hour` rule which:
 
 ## Results
 Customers received an e-mail
-<img>
+![image](https://github.com/k8loud/demo/assets/29145519/85d57b57-171f-4ee7-b5e2-52be488da0aa)
 
 SockShop management can observe products popularity trends on a Grafana dashboard
-<img>
-<img>
+![screenshot_2023-12-03_18-00-32](https://github.com/k8loud/demo/assets/29145519/d03efa07-367b-4ddc-a970-82370097e603)
