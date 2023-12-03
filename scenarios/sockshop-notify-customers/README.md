@@ -1,5 +1,23 @@
-# Sample
-Description of the scenario
+# SockShop notify customers
+## Requirements
+### Metrics
+```
+catalogue-queries-top1-7d = topk(1, count_over_time(request_duration_seconds_count{job="kubernetes-service-endpoints", kubernetes_name="front-end", kubernetes_namespace="sock-shop", method="get", name="front-end", route=~"/catalogue/.*-.*-.*-.*-.*", service="front-end", status_code="200"}[7d]))
+```
 
+## Description
+SockShop management decided that in order to increase income an advertising campaign should be launched.
+Each week all customers will be sent a mail containing details about the most popular product in the company's catalogue.
+The management is hoping that will cause a snowball effect (the more people buy the more others are convinced that the 
+product is worth buying).
 
-request_duration_seconds_count{job="kubernetes-service-endpoints", kubernetes_name="front-end", kubernetes_namespace="sock-shop", method="get", name="front-end", route=~"/catalogue/.*-.*-.*-.*-.*", service="front-end", status_code="200"}
+To achieve this goal the `catalogue-queries-top1-7d` metric has been created which:
+1. Collects requests count for items in the catalogue - `request_duration_seconds_count{...}`
+2. Does it for the last 7 days - `count_over_time(...)[7d]`
+3. Takes the top 1 value - `topk(1, ...)`
+
+The metric is used in the `most-popular-this-week` rule which:
+1. Awaits for the aforementioned metric
+2. Checks the time constraint which will pass only on `SAT 10:00:00`
+3. Gathers required information and processes it
+4. Submits a `NotifyCustomersAction`

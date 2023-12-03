@@ -27,12 +27,13 @@ end
 rule "most-popular-this-week"
 	when
 		catalogueQueries : Metric(
-			queryTag == "catalogue-queries",
+			queryTag == "catalogue-queries-top1-7d",
 			queriedCount : value
 		)
-		eval(usableServices.getCronCheckerService().checkPatternForSession("0 56 18 ? * SAT *"))
+		eval(usableServices.getCronCheckerService().checkPatternForSession("0 0 10 ? * SAT *"))
 	then
 		System.out.println("Processing 'most-popular-this-week'...");
+
 		sockShopUrl = "http://" + catalogueQueries.getLabels().get("instance");
 		urlSuplement = catalogueQueries.getLabels().get("route").substring(1);
 
@@ -42,8 +43,9 @@ rule "most-popular-this-week"
 		item = new GsonBuilder().create().
 			fromJson(itemJSON, CatalogueItem.class);
 
-		content = String.format("Dear customer!%n%nThis week's most popular product is%n%n" +
-			"%-14s: %s%n%-14s: %s%n%-14s: %.2f $%n%-14s: %s",
+		content = String.format("Dear customer!%n%nThis week's most popular product has been viewed %.0f times" +
+			", more details:%n%n%-14s: %s%n%-14s: %s%n%-14s: %.2f $%n%-14s: %s",
+			queriedCount,
 			"name", ((CatalogueItem)item).getName(),
 			"description", ((CatalogueItem)item).getDescription(),
 			"price", ((CatalogueItem)item).getPrice(),
@@ -51,9 +53,9 @@ rule "most-popular-this-week"
 
 		// Couldn't make streams work
 		imagesUrls = Arrays.asList(((CatalogueItem)item).getImageUrl());
-        for (int i = 0; i < imagesUrls.size(); i++) {
-            imagesUrls.set(i, sockShopUrl + imagesUrls.get(i));
-        }
+		for (int i = 0; i < imagesUrls.size(); i++) {
+			imagesUrls.set(i, sockShopUrl + imagesUrls.get(i));
+		}
 
 		actions.add(NotifyCustomersAction.builder()
 			.sockShopService(usableServices.getSockShopService())
