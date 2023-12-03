@@ -16,6 +16,14 @@ ITEM_IDS=(
   "819e1fbf-8b7e-4f6d-811f-693534916a8b"
   "808a2de1-1aaa-4c25-a9b9-6612e8f29a38"
 )
+MULTIPLIERS=(
+  4
+  2
+  1
+  1
+  3
+  2
+)
 
 function rand_in_range {
   MIN="$1"
