@@ -1,0 +1,38 @@
+import io.github.hephaestusmetrics.model.metrics.Metric;
+import java.util.List
+import org.k8loud.executor.actions.openstack.IpThrottleAction
+
+global org.k8loud.executor.model.ActionList actions;
+global org.k8loud.executor.drools.UsableServices usableServices;
+
+dialect "mvel"
+
+rule "throttling-rule"
+    dialect "mvel"
+    when
+        test1 : Metric(
+            queryTag == "demo-app-last-minute-rq-count-per-origin",
+            origin : labels["origin"],
+            sum : value
+        )
+        eval(sum > 90)
+    then
+		System.out.println("Processing 'demo-app-metrics'...");
+
+        String[] ipParts = origin.split("\\.");
+        remoteIpPrefix = ipParts[0] + "." + ipParts[1] + "." + ipParts[2] + "." + "0/24";
+
+        actions.add(IpThrottleAction.builder()
+            .region("RegionOne")
+            .serverId("c2f615ca-9f6a-407a-a32c-dbdb64109fa4")
+            .ethertype("IPv4")
+            .remoteIpPrefix(remoteIpPrefix)
+            .protocol("TCP")
+            .portRangeMin(80)
+            .portRangeMax(80)
+            .secDuration(1000)
+            .openstackService(usableServices.getOpenstackService())
+            .build());
+
+		System.out.println("...Processed 'demo-app-metrics'");
+end
