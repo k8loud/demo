@@ -68,7 +68,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum_over_time(request_duration_seconds_count{job=\"kubernetes-service-endpoints\", kubernetes_name=\"front-end\", kubernetes_namespace=\"sock-shop\", method=\"get\", name=\"front-end\", route=~\"/catalogue/.*-.*-.*-.*-.*\", service=\"front-end\", status_code=\"200\"}[1h])",
+          "expr": "sum_over_time(request_duration_seconds_count{job=\"kubernetes-service-endpoints\", kubernetes_name=\"front-end\", kubernetes_namespace=\"sock-shop\", method=\"get\", name=\"front-end\", route=~\"/catalogue/.*-.*-.*-.*-.*\", service=\"front-end\", status_code=\"200\"}[$__range])",
           "hide": false,
           "interval": "",
           "legendFormat": "{{route}}",
@@ -234,7 +234,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum_over_time(request_duration_seconds_count{job=\"kubernetes-service-endpoints\", kubernetes_name=\"front-end\", kubernetes_namespace=\"sock-shop\", method=\"get\", name=\"front-end\", route=~\"/catalogue/.*-.*-.*-.*-.*\", service=\"front-end\", status_code=\"200\"}[1h])",
+          "expr": "sum_over_time(request_duration_seconds_count{job=\"kubernetes-service-endpoints\", kubernetes_name=\"front-end\", kubernetes_namespace=\"sock-shop\", method=\"get\", name=\"front-end\", route=~\"/catalogue/.*-.*-.*-.*-.*\", service=\"front-end\", status_code=\"200\"}[$__range])",
           "interval": "",
           "legendFormat": "{{route}}",
           "queryType": "randomWalk",
@@ -320,5 +320,5 @@
   "timezone": "",
   "title": "Scenario \"Sockshop notify customers\"",
   "uid": "0n312lNSx",
-  "version": 22
+  "version": 25
 }
