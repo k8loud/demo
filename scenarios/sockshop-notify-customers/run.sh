@@ -2,12 +2,12 @@
 
 URL_BASE="http://localhost:8082/catalogue"
 CYCLES=1000
-MIN_REQ=0
-MAX_REQ=5
+MIN_REQ=1
+MAX_REQ=10
 ITEM_SLEEP_S_MIN=0
-ITEM_SLEEP_S_MAX=1
+ITEM_SLEEP_S_MAX=3
 CYCLE_SLEEP_S_MIN=0
-CYCLE_SLEEP_S_MAX=2
+CYCLE_SLEEP_S_MAX=10
 ITEM_IDS=(
   "zzz4f044-b040-410d-8ead-4de0446aec7e"
   "03fef6ac-1896-4ce8-bd69-b798f85c6e0b"
@@ -17,12 +17,12 @@ ITEM_IDS=(
   "808a2de1-1aaa-4c25-a9b9-6612e8f29a38"
 )
 MULTIPLIERS=(
-  4
-  2
   1
   1
-  3
-  2
+  1
+  1
+  1
+  1
 )
 
 function rand_in_range {
@@ -34,7 +34,7 @@ function rand_in_range {
 
 for c in $(seq 1 $CYCLES); do
   echo "Cycle $c / $CYCLES"
-  for i in ${!ITEM_IDS[@]}; do
+  for i in "${!ITEM_IDS[@]}"; do
     item_id=${ITEM_IDS[$i]}
     req_cnt=$(($(rand_in_range $MIN_REQ $MAX_REQ) * ${MULTIPLIERS[$i]}))
     url="$URL_BASE/$item_id"

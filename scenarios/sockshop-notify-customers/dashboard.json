@@ -15,7 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 8,
+  "id": 6,
+  "iteration": 1701700526814,
   "links": [],
   "panels": [
     {
@@ -32,8 +33,8 @@
       "fill": 2,
       "fillGradient": 0,
       "gridPos": {
-        "h": 12,
-        "w": 24,
+        "h": 14,
+        "w": 12,
         "x": 0,
         "y": 0
       },
@@ -45,7 +46,7 @@
         "current": false,
         "max": false,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "total": false,
         "values": false
@@ -68,7 +69,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum_over_time(request_duration_seconds_count{job=\"kubernetes-service-endpoints\", kubernetes_name=\"front-end\", kubernetes_namespace=\"sock-shop\", method=\"get\", name=\"front-end\", route=~\"/catalogue/.*-.*-.*-.*-.*\", service=\"front-end\", status_code=\"200\"}[$__range])",
+          "expr": "round(increase(request_duration_seconds_count{job=\"kubernetes-service-endpoints\", kubernetes_name=\"front-end\", kubernetes_namespace=\"sock-shop\", method=\"get\", name=\"front-end\", route=~\"/catalogue/.*-.*-.*-.*-.*\", service=\"front-end\", status_code=\"200\"}[1h]))",
           "hide": false,
           "interval": "",
           "legendFormat": "{{route}}",
@@ -80,7 +81,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Product market share over time",
+      "title": "Product market share, 1 hour average",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -178,6 +179,161 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 2,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "increase(request_duration_seconds_count{job=\"kubernetes-service-endpoints\", kubernetes_name=\"front-end\", kubernetes_namespace=\"sock-shop\", method=\"get\", name=\"front-end\", route=~\"/catalogue/.*-.*-.*-.*-.*\", service=\"front-end\", status_code=\"200\"}[30s]) / 2",
+          "interval": "",
+          "legendFormat": "{{route}}",
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Product views, 15 s intervals",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "\\/catalogue\\/(.*-.*-.*-.*-.*)",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(03fef6ac-1896-4ce8-bd69-b798f85c6e0b)",
+            "renamePattern": "Holy ($1)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(3395a43e-2d88-40de-b95f-e00e1502085b)",
+            "renamePattern": "Colorful ($1)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(510a0d7e-8e83-4193-b483-e27e09ddc34d)",
+            "renamePattern": "SuperSport XL ($1)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(808a2de1-1aaa-4c25-a9b9-6612e8f29a38)",
+            "renamePattern": "Crossed ($1)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(819e1fbf-8b7e-4f6d-811f-693534916a8b)",
+            "renamePattern": "Figueroa ($1)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(d3588630-ad8e-49df-bbd7-3167f7efb246)",
+            "renamePattern": "YouTube.sock ($1)"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(zzz4f044-b040-410d-8ead-4de0446aec7e)",
+            "renamePattern": "Classic ($1)"
+          }
+        }
+      ],
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "datasource": "prometheus",
       "fieldConfig": {
         "defaults": {
@@ -211,10 +367,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 14
       },
       "id": 6,
       "options": {
@@ -222,7 +378,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -234,7 +390,8 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum_over_time(request_duration_seconds_count{job=\"kubernetes-service-endpoints\", kubernetes_name=\"front-end\", kubernetes_namespace=\"sock-shop\", method=\"get\", name=\"front-end\", route=~\"/catalogue/.*-.*-.*-.*-.*\", service=\"front-end\", status_code=\"200\"}[$__range])",
+          "expr": "floor(delta(request_duration_seconds_count{job=\"kubernetes-service-endpoints\", kubernetes_name=\"front-end\", kubernetes_namespace=\"sock-shop\", method=\"get\", name=\"front-end\", route=~\"/catalogue/.*-.*-.*-.*-.*\", service=\"front-end\", status_code=\"200\"}[$timeRange]))",
+          "hide": false,
           "interval": "",
           "legendFormat": "{{route}}",
           "queryType": "randomWalk",
@@ -310,15 +467,92 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "auto": true,
+        "auto_count": 1,
+        "auto_min": "10s",
+        "current": {
+          "selected": false,
+          "text": "auto",
+          "value": "$__auto_interval_timeRange"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "label": null,
+        "name": "timeRange",
+        "options": [
+          {
+            "selected": true,
+            "text": "auto",
+            "value": "$__auto_interval_timeRange"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "7d",
+            "value": "7d"
+          },
+          {
+            "selected": false,
+            "text": "14d",
+            "value": "14d"
+          },
+          {
+            "selected": false,
+            "text": "30d",
+            "value": "30d"
+          }
+        ],
+        "query": "1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
+      }
+    ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Scenario \"Sockshop notify customers\"",
-  "uid": "0n312lNSx",
-  "version": 25
+  "uid": "0n312lNSy",
+  "version": 8
 }

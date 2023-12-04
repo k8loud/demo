@@ -61,7 +61,7 @@ rule "most-popular-this-hour"
 			.sockShopService(usableServices.getSockShopService())
 			.applicationUrl(sockShopUrl)
 			.senderDisplayName("SockShop Marketing")
-			.subject("Most popular item this hour")
+			.subject("Most popular product this hour")
 			.content(content)
 			.imagesUrls(imagesUrls)
 			.build());
