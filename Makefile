@@ -15,15 +15,15 @@ SCENARIO_NAME ?= "sample"
 
 TARGET_DIR = target
 SCENARIOS_DIR = scenarios
-SCENARIO_DIR = "$(SCENARIOS_DIR)/$(SCENARIO_NAME)"
+SCENARIO_DIR = $(SCENARIOS_DIR)/$(SCENARIO_NAME)
 
 CONFIG_MAP_FILENAME = cm.yaml
 RULES_FILENAME = rules.drl
 RUN_FILENAME = run.sh
 TEAR_DOWN_FILENAME = tear_down.sh
 
-TARGET_CONFIG_MAP_PATH = "$(TARGET_DIR)/$(CONFIG_MAP_FILENAME)"
-TARGET_RULES_PATH = "$(TARGET_DIR)/$(RULES_FILENAME)"
+TARGET_CONFIG_MAP_PATH = $(TARGET_DIR)/$(CONFIG_MAP_FILENAME)
+TARGET_RULES_PATH = $(TARGET_DIR)/$(RULES_FILENAME)
 
 # targets that aren't annotated with ## are not supposed to be run on their own
 
@@ -38,6 +38,7 @@ run: ## run scenario with name passed as SCENARIO_NAME
 	make tear-down
 
 create-cm-file:
+	@mkdir -p target
 	@echo "Creating a ConfigMap file: $(TARGET_CONFIG_MAP_PATH)"
 	@echo "$$CONFIG_MAP_HEADER" > $(TARGET_CONFIG_MAP_PATH)
 	cp $(SOURCE_RULES_PATH) $(TARGET_RULES_PATH)
