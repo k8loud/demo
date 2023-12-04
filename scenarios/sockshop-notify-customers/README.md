@@ -2,7 +2,7 @@
 ## Requirements
 ### Metrics
 ```
-catalogue-queries-top1-1h = topk(1, sum_over_time(request_duration_seconds_count{job="kubernetes-service-endpoints", kubernetes_name="front-end", kubernetes_namespace="sock-shop", method="get", name="front-end", route=~"/catalogue/.*-.*-.*-.*-.*", service="front-end", status_code="200"}[1h]))
+catalogue-queries-top1-1h = topk(1, round(increase(request_duration_seconds_count{job="kubernetes-service-endpoints", kubernetes_name="front-end", kubernetes_namespace="sock-shop", method="get", name="front-end", route=~"/catalogue/.*-.*-.*-.*-.*", service="front-end", status_code="200"}[1h])))
 ```
 
 ## Description
@@ -11,12 +11,13 @@ Each hour all customers will be sent a mail containing details about the most po
 The management is hoping that will cause a snowball effect (the more people buy the more others are convinced that the 
 product is worth buying).
 
-To achieve this goal the `catalogue-queries-top1-1h` metric has been created which:
-1. Collects requests for items in the catalogue, grouped by itemId - `request_duration_seconds_count{...}`
-2. Sums occurrences in the last 1 hour - `sum_over_time(...)[1h]`
-3. Selects the top 1 value - `topk(1, ...)`
+To achieve this goal the `catalogue-queries-top1-1h` metric has been created:
+1. `request_duration_seconds_count{...}[1h]` - counts requests for items during last hour, grouped by itemId
+2. `increase` - the query from 1. accumulates result, but we're interested in its growth
+3. `round` - mitigates [the issues](https://stackoverflow.com/questions/70835778/understanding-increase-and-rate-used-on-http-server-requests-seconds-count-w) of `increase`
+3. `topk(1, ...)` - selects the top 1 value
 
-The metric is used in the `most-popular-this-hour` rule which:
+The metric is used in the `most-popular-this-hour` rule, which:
 1. Awaits for the aforementioned metric
 2. Checks the time constraint which will pass only once an hour
 3. Gathers the required information and processes it
