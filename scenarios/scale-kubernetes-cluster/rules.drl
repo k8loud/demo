@@ -9,17 +9,17 @@ dialect "mvel"
 
 global org.k8loud.executor.drools.UsableServices usableServices;
 
-// It takes about 2 minutes from processing the rule to being ready
+// It takes about 2-3 minutes from processing the rule to being ready
 rule "scale-kubernetes-cluster-up"
 	when
-		eval(true)
+		eval(usableServices.getCronCheckerService().checkPatternForSession("0 0/4 * ? * * *"))
   	then
         System.out.println("Processing 'scale-kubernetes-cluster-up'...");
 
         AddInstanceAction.builder()
         	.region("RegionOne")
-        	.name("kube-worker")
-        	.imageId("ASDSAD") // kube-worker-quick-spawn
+        	.name("kube-worker-auto-scaled")
+        	.imageId("70a1dc73-f794-439f-8dd2-9e5cf8a73d5a") // kube-worker-quick-spawn
         	.flavorId("414a6a89-57c3-4331-9a05-0a53fc9a7d02") // h2.medium
 			.userData("#!/bin/bash\nsudo apt -y install nmap\nsudo cp /home/ubuntu/kubernetes-lab-setup/configs/" +
 				"join_cluster.service /etc/systemd/system/join_cluster.service\nchmod +x /home/ubuntu/kubernetes-lab-" +
@@ -33,16 +33,17 @@ rule "scale-kubernetes-cluster-up"
         System.out.println("...Processed 'scale-kubernetes-cluster-up'");
 end
 
+// It takes about 1-2 minutes from processing the rule to having the node's VM removed
 rule "scale-kubernetes-cluster-down"
 	when
-		eval(true)
+		eval(usableServices.getCronCheckerService().checkPatternForSession("0 0/4 * ? * * *"))
   	then
         System.out.println("Processing 'scale-kubernetes-cluster-down'...");
 
         // 1. List nodes
         executionRS = GetServerNamesAction.builder()
         	.region("RegionOne")
-        	.namePattern("kube-worker-quick-spawn-.*")
+        	.namePattern("kube-worker-auto-scaled-.*")
         	.openstackService(usableServices.getOpenstackService())
         	.build()
         	.execute();
@@ -64,7 +65,7 @@ rule "scale-kubernetes-cluster-down"
 					.build()
 					.execute();
                 if (executionRS.getExitCode() == ExecutionExitCode.OK) {
-					// 3 Delete the detached node VM
+					// 3. Delete the detached node VM
 					DeleteInstanceAction.builder()
 						.region("RegionOne")
 						.namePattern(nodeName)
