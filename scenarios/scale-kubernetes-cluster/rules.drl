@@ -1,0 +1,79 @@
+import org.k8loud.executor.actions.openstack.AddInstanceAction
+import org.k8loud.executor.actions.openstack.GetServerNamesAction
+import org.k8loud.executor.actions.command.CommandAction
+import org.k8loud.executor.actions.command.CustomScriptAction
+import org.k8loud.executor.actions.command.DetachNodeFromKubernetesClusterAction
+import org.k8loud.executor.actions.openstack.DeleteInstanceAction
+import org.k8loud.executor.model.ExecutionExitCode
+dialect "mvel"
+
+global org.k8loud.executor.drools.UsableServices usableServices;
+
+// It takes about 2 minutes from processing the rule to being ready
+rule "scale-kubernetes-cluster-up"
+	when
+		eval(true)
+  	then
+        System.out.println("Processing 'scale-kubernetes-cluster-up'...");
+
+        AddInstanceAction.builder()
+        	.region("RegionOne")
+        	.name("kube-worker")
+        	.imageId("ASDSAD") // kube-worker-quick-spawn
+        	.flavorId("414a6a89-57c3-4331-9a05-0a53fc9a7d02") // h2.medium
+			.userData("#!/bin/bash\nsudo apt -y install nmap\nsudo cp /home/ubuntu/kubernetes-lab-setup/configs/" +
+				"join_cluster.service /etc/systemd/system/join_cluster.service\nchmod +x /home/ubuntu/kubernetes-lab-" +
+			 	"setup/scripts/kube_setup/join_cluster.sh\nsudo systemctl enable join_cluster.service\nsudo systemctl" +
+			 	" start join_cluster.service") // enable join_cluster.service
+			.waitActiveSec(1) // free up the session
+			.openstackService(usableServices.getOpenstackService())
+			.build()
+			.execute();
+
+        System.out.println("...Processed 'scale-kubernetes-cluster-up'");
+end
+
+rule "scale-kubernetes-cluster-down"
+	when
+		eval(true)
+  	then
+        System.out.println("Processing 'scale-kubernetes-cluster-down'...");
+
+        // 1. List nodes
+        executionRS = GetServerNamesAction.builder()
+        	.region("RegionOne")
+        	.namePattern("kube-worker-quick-spawn-.*")
+        	.openstackService(usableServices.getOpenstackService())
+        	.build()
+        	.execute();
+
+		if (executionRS.getExitCode() == ExecutionExitCode.OK) {
+            serverNames = executionRS.getAdditionalData().get("serverNames");
+			if (serverNames.length() == 0) {
+				System.out.println("There are no nodes to be scaled down");
+			} else {
+				nodeName = serverNames.split(",")[0];
+				// 2. Send detach node commands to the master node
+				executionRS = DetachNodeFromKubernetesClusterAction.builder()
+					.host("asdf") // master node's IP
+					.port(22)
+					.privateKey("asdf") // master node's pkey
+					.user("ubuntu")
+					.nodeName(nodeName)
+					.commandExecutionService(usableServices.getCommandExecutionService())
+					.build()
+					.execute();
+                if (executionRS.getExitCode() == ExecutionExitCode.OK) {
+					// 3 Delete the detached node VM
+					DeleteInstanceAction.builder()
+						.region("RegionOne")
+						.namePattern(nodeName)
+						.openstackService(usableServices.getOpenstackService())
+						.build()
+						.execute();
+                }
+			}
+        }
+
+		System.out.println("...Processed 'scale-kubernetes-cluster-down'");
+end
