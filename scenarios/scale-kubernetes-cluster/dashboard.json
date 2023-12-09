@@ -1263,8 +1263,8 @@
       "gridPos": {
         "h": 10,
         "w": 10,
-        "x": 0,
-        "y": 32
+        "x": 14,
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 21,
@@ -1362,5 +1362,5 @@
   "timezone": "",
   "title": "Scenario \"Scale Kubernetes cluster\"",
   "uid": "bU71L7vIx",
-  "version": 8
+  "version": 9
 }
