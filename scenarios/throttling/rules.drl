@@ -34,5 +34,5 @@ rule "throttling-rule"
             .openstackService(usableServices.getOpenstackService())
             .build());
 
-		System.out.println("...Processed 'demo-app-metrics'");
+		System.out.println("...Processed 'throttling-rule'");
 end
