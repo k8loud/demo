@@ -20,3 +20,6 @@ Keeping additional resources just in case a spike occurs puts them to waste whil
 It would be beneficial if the resources pool could dynamically adjust to the current state.
 This scenario presents scaling based on CPU and RAM usage of the Kubernetes worker nodes.
 Triggers of the rules include filesystem usage too, but it hasn't been tested.
+
+## Results
+![screenshot_2023-12-09_01-02-18](https://github.com/k8loud/demo/assets/29145519/8763432b-a985-436d-bc94-ebe3d2272ee2)
