@@ -29,7 +29,7 @@ rule "scale-kubernetes-cluster-up"
 		eval((clusterMemoryUsageValue > 70 ||
 		    clusterCpuUsageValue > 70 ||
 		    clusterFilesystemUsageValue > 70) &&
-		    cronChecker.checkPatternForSession("0 0/5 * ? * * *"))
+		    cronChecker.checkPatternForSession("0 0/2 * ? * * *"))
   	then
         System.out.println("Processing 'scale-kubernetes-cluster-up'...");
 
@@ -70,7 +70,7 @@ rule "scale-kubernetes-cluster-down"
 		eval((clusterMemoryUsageValue < 50 &&
             clusterCpuUsageValue < 50 &&
             clusterFilesystemUsageValue < 50) &&
-		    cronChecker.checkPatternForSession("0 0/5 * ? * * *"))
+		    cronChecker.checkPatternForSession("0 0/2 * ? * * *"))
   	then
         System.out.println("Processing 'scale-kubernetes-cluster-down'...");
 

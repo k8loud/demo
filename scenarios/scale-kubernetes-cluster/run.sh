@@ -1,31 +1,50 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-# Assuming 4 worker nodes
-
 CPU_REPLICAS=(
-  10  # ~50%
-  18  # ~80%
-  0   # reset
-  0   # 0%
-  0   # 0%
-  0   # cleanup
+  18
+  12
+  24
+  16
+  0    # reset
+  0
+  0
+  0
+  0
+  0    # reset
+  18
+  10
+  24
 )
 MEM_REPLICAS=(
-  0   # 0%
-  0   # 0%
-  0   # reset
-  20  # ~50%
-  35  # ~80%
-  0   # cleanup
+  0
+  0
+  0
+  0
+  0    # reset
+  35
+  45
+  15
+  35
+  0    # reset
+  35
+  45
+  15
 )
 STAGE_DURATIONS_S=(
-  60  # setup CPU test
-  600 # CPU test
-  600 # reset
-  60  # setup MEM test
-  600 # MEM test
-  0   # cleanup
+  360
+  240
+  420
+  180
+  600  # reset
+  360
+  240
+  420
+  180
+  600  # reset
+  360
+  360
+  360
 )
 
 kubectl apply -f loadtest.yaml -n loadtest

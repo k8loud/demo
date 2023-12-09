@@ -19,6 +19,20 @@
   "links": [],
   "panels": [
     {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 16,
+      "panels": [],
+      "title": "Cluster",
+      "type": "row"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -36,7 +50,7 @@
         "h": 10,
         "w": 10,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "hiddenSeries": false,
       "id": 2,
@@ -78,7 +92,7 @@
         {
           "$$hashKey": "object:1536",
           "colorMode": "critical",
-          "fill": false,
+          "fill": true,
           "line": true,
           "op": "gt",
           "value": 80,
@@ -102,6 +116,15 @@
           "lineColor": "rgba(31, 96, 196, 0.6)",
           "op": "lt",
           "value": 50,
+          "yaxis": "left"
+        },
+        {
+          "$$hashKey": "object:195",
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "lt",
+          "value": 30,
           "yaxis": "left"
         }
       ],
@@ -176,7 +199,7 @@
         "h": 5,
         "w": 2,
         "x": 10,
-        "y": 0
+        "y": 1
       },
       "height": "1px",
       "id": 10,
@@ -272,7 +295,7 @@
         "h": 5,
         "w": 2,
         "x": 12,
-        "y": 0
+        "y": 1
       },
       "height": "1px",
       "id": 12,
@@ -357,7 +380,7 @@
         "h": 10,
         "w": 10,
         "x": 14,
-        "y": 0
+        "y": 1
       },
       "hiddenSeries": false,
       "id": 4,
@@ -399,7 +422,7 @@
         {
           "$$hashKey": "object:1177",
           "colorMode": "critical",
-          "fill": false,
+          "fill": true,
           "line": true,
           "op": "gt",
           "value": 80,
@@ -423,6 +446,15 @@
           "lineColor": "rgba(31, 96, 196, 0.6)",
           "op": "lt",
           "value": 50,
+          "yaxis": "left"
+        },
+        {
+          "$$hashKey": "object:277",
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "lt",
+          "value": 30,
           "yaxis": "left"
         }
       ],
@@ -499,7 +531,7 @@
         "h": 5,
         "w": 2,
         "x": 10,
-        "y": 5
+        "y": 6
       },
       "height": "1px",
       "id": 9,
@@ -595,7 +627,7 @@
         "h": 5,
         "w": 2,
         "x": 12,
-        "y": 5
+        "y": 6
       },
       "height": "1px",
       "id": 11,
@@ -680,7 +712,7 @@
         "h": 10,
         "w": 10,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "hiddenSeries": false,
       "id": 6,
@@ -722,7 +754,7 @@
         {
           "$$hashKey": "object:1441",
           "colorMode": "critical",
-          "fill": false,
+          "fill": true,
           "line": true,
           "op": "gt",
           "value": 80,
@@ -746,6 +778,15 @@
           "lineColor": "rgba(31, 96, 196, 0.6)",
           "op": "lt",
           "value": 50,
+          "yaxis": "left"
+        },
+        {
+          "$$hashKey": "object:359",
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "lt",
+          "value": 30,
           "yaxis": "left"
         }
       ],
@@ -820,7 +861,7 @@
         "h": 5,
         "w": 2,
         "x": 10,
-        "y": 10
+        "y": 11
       },
       "height": "1px",
       "id": 14,
@@ -905,7 +946,7 @@
         "h": 10,
         "w": 10,
         "x": 14,
-        "y": 10
+        "y": 11
       },
       "hiddenSeries": false,
       "id": 8,
@@ -1024,7 +1065,7 @@
         "h": 5,
         "w": 2,
         "x": 10,
-        "y": 15
+        "y": 16
       },
       "height": "1px",
       "id": 13,
@@ -1090,9 +1131,223 @@
         }
       ],
       "valueName": "current"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 18,
+      "panels": [],
+      "title": "Loadtest",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "fill": 2,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 10,
+        "w": 10,
+        "x": 0,
+        "y": 22
+      },
+      "hiddenSeries": false,
+      "id": 20,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null as zero",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": true,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "count(kube_pod_info{pod=~\"loadtest-mem-.*\"})",
+          "interval": "",
+          "legendFormat": "",
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "loadtest-mem instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1609",
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1610",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "fill": 2,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 10,
+        "w": 10,
+        "x": 0,
+        "y": 32
+      },
+      "hiddenSeries": false,
+      "id": 21,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null as zero",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": true,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "count(kube_pod_info{pod=~\"loadtest-cpu-.*\"})",
+          "interval": "",
+          "legendFormat": "",
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "loadtest-cpu instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1609",
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1610",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
-  "refresh": "5s",
+  "refresh": false,
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
@@ -1100,12 +1355,12 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
-    "to": "now"
+    "from": "2023-12-09T10:55:00.000Z",
+    "to": "2023-12-09T12:30:00.000Z"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Scenario \"Scale Kubernetes cluster\"",
   "uid": "bU71L7vIx",
-  "version": 4
+  "version": 8
 }
