@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.k8loud</groupId>
             <artifactId>themis-executor</artifactId>
-            <version>0.0.3.4-scenario-scale-kubernetes-cluster</version>
+            <version>0.0.3.6</version>
         </dependency>
     </dependencies>
 </project>
