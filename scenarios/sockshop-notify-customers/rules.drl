@@ -7,7 +7,9 @@ import com.google.gson.GsonBuilder;
 import org.k8loud.executor.actions.cnapp.sockshop.NotifyCustomersAction
 import java.util.Arrays
 import java.util.stream.Collectors
-import java.util.stream.Stream;
+import java.util.stream.Stream
+import org.k8loud.executor.actions.cnapp.db.mysql.MySqlUpdateAction
+import org.k8loud.executor.model.ExecutionExitCode;
 
 global org.k8loud.executor.drools.UsableServices usableServices;
 global org.k8loud.executor.drools.CronChecker cronChecker;
@@ -30,6 +32,10 @@ rule "most-popular-this-hour"
 			queryTag == "catalogue-queries-top1-1h",
 			queriedCount : value
 		)
+		catalogueDb : Metric(
+            queryTag == "catalogue-db",
+            catalogueDbIP : labels["cluster_ip"]
+		)
 		eval(cronChecker.checkPatternForSession("0 0 * ? * * *"))
 	then
 		System.out.println("Processing 'most-popular-this-hour'...");
@@ -43,29 +49,46 @@ rule "most-popular-this-hour"
 		item = new GsonBuilder().create().
 			fromJson(itemJSON, CatalogueItem.class);
 
-		content = String.format("Dear customer!%n%nThis hour's most popular product has been viewed %.0f times" +
-			", more details:%n%n%-14s: %s%n%-14s: %s%n%-14s: %.2f $%n%-14s: %s",
-			queriedCount,
-			"name", ((CatalogueItem)item).getName(),
-			"description", ((CatalogueItem)item).getDescription(),
-			"price", ((CatalogueItem)item).getPrice(),
-			"in stock", ((CatalogueItem)item).getCount());
+        // 1. Update price
+        discount = 0.25;
+        price = ((CatalogueItem)item).getPrice();
+        discountedPrice = price * (1 - discount);
+        discountPriceQuery = String.format("update sock set price = %.2f where sock_id = '%s'",
+            discountedPrice, ((CatalogueItem)item).getId());
+        connString = String.format("jdbc:mysql://%s:3306/socksdb?user=root&password=fake_password", catalogueDbIP);
+        executionRS = MySqlUpdateAction.builder()
+            .connString(connString)
+            .query(discountPriceQuery)
+            .dbService(usableServices.getMySQLService())
+            .build()
+            .execute();
 
-		// Couldn't make streams work
-		imagesUrls = Arrays.asList(((CatalogueItem)item).getImageUrl());
-		for (int i = 0; i < imagesUrls.size(); i++) {
-			imagesUrls.set(i, sockShopUrl + imagesUrls.get(i));
-		}
+        if (executionRS.getExitCode() == ExecutionExitCode.OK) {
+            content = String.format("Dear customer!%n%nThis hour's most popular product has been viewed %.0f times" +
+                ", more details:%n%n%-14s: %s%n%-14s: %s%n%-14s: %s %n%-14s: %d",
+                queriedCount,
+                "name", ((CatalogueItem)item).getName(),
+                "description", ((CatalogueItem)item).getDescription(),
+                "price", String.format("%.2f$ -> %.2f$ (%.0f%% OFF)", price, discountedPrice, discount * 100),
+                "in stock", ((CatalogueItem)item).getCount());
 
-		NotifyCustomersAction.builder()
-			.sockShopService(usableServices.getSockShopService())
-			.applicationUrl(sockShopUrl)
-			.senderDisplayName("SockShop Marketing")
-			.subject("Most popular product this hour")
-			.content(content)
-			.imagesUrls(imagesUrls)
-			.build()
-			.execute();
+            // Couldn't make streams work
+            imagesUrls = Arrays.asList(((CatalogueItem)item).getImageUrl());
+            for (int i = 0; i < imagesUrls.size(); i++) {
+                imagesUrls.set(i, sockShopUrl + imagesUrls.get(i));
+            }
+
+            // 2. Send emails to the customers
+            NotifyCustomersAction.builder()
+                .sockShopService(usableServices.getSockShopService())
+                .applicationUrl(sockShopUrl)
+                .senderDisplayName("SockShop Marketing")
+                .subject("Most popular product this hour")
+                .content(content)
+                .imagesUrls(imagesUrls)
+                .build()
+                .execute();
+        }
 
 		System.out.println("...Processed 'most-popular-this-hour'");
 end

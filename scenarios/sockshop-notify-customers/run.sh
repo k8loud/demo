@@ -32,7 +32,6 @@ function rand_in_range {
   echo $result
 }
 
-# Forward from localhost:8082 to SockShop's frontend
 kubectl config set-context --current --namespace=sock-shop
 kubectl port-forward svc/front-end 8082:80 &
 
