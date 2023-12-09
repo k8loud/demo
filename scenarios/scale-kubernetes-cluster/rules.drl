@@ -1,3 +1,4 @@
+import io.github.hephaestusmetrics.model.metrics.Metric;
 import org.k8loud.executor.actions.openstack.AddInstanceAction
 import org.k8loud.executor.actions.openstack.GetServerNamesAction
 import org.k8loud.executor.actions.command.CommandAction
@@ -5,13 +6,30 @@ import org.k8loud.executor.actions.command.CustomScriptAction
 import org.k8loud.executor.actions.command.DetachNodeFromKubernetesClusterAction
 import org.k8loud.executor.actions.openstack.DeleteInstanceAction
 import org.k8loud.executor.model.ExecutionExitCode
+
 dialect "mvel"
 
 global org.k8loud.executor.drools.UsableServices usableServices;
+global org.k8loud.executor.drools.CronChecker cronChecker;
 
 rule "scale-kubernetes-cluster-up"
 	when
-		eval(usableServices.getCronCheckerService().checkPatternForSession("0 0/5 * ? * * *"))
+        clusterMemoryUsage : Metric(
+            queryTag == "cluster-memory-usage",
+            clusterMemoryUsageValue : value
+        )
+        clusterCpuUsage : Metric(
+            queryTag == "cluster-cpu-usage",
+            clusterCpuUsageValue : value
+        )
+        clusterFilesystemUsage : Metric(
+            queryTag == "cluster-filesystem-usage",
+            clusterFilesystemUsageValue : value
+        )
+		eval((clusterMemoryUsageValue > 70 ||
+		    clusterCpuUsageValue > 70 ||
+		    clusterFilesystemUsageValue > 70) &&
+		    cronChecker.checkPatternForSession("0 0/5 * ? * * *"))
   	then
         System.out.println("Processing 'scale-kubernetes-cluster-up'...");
 
@@ -20,10 +38,13 @@ rule "scale-kubernetes-cluster-up"
         	.name("kube-worker-auto-scaled")
         	.imageId("70a1dc73-f794-439f-8dd2-9e5cf8a73d5a")
         	.flavorId("414a6a89-57c3-4331-9a05-0a53fc9a7d02")
+        	.keypairName("default")
+        	.securityGroup(null)
 			.userData("#!/bin/bash\nsudo apt -y install nmap\nsudo cp /home/ubuntu/kubernetes-lab-setup/configs/" +
 				"join_cluster.service /etc/systemd/system/join_cluster.service\nchmod +x /home/ubuntu/kubernetes-lab-" +
 			 	"setup/scripts/kube_setup/join_cluster.sh\nsudo systemctl enable join_cluster.service\nsudo systemctl" +
 			 	" start join_cluster.service")
+			.count(1)
 			.waitActiveSec(1)
 			.openstackService(usableServices.getOpenstackService())
 			.build()
@@ -34,7 +55,22 @@ end
 
 rule "scale-kubernetes-cluster-down"
 	when
-		eval(usableServices.getCronCheckerService().checkPatternForSession("0 0/5 * ? * * *"))
+        clusterMemoryUsage : Metric(
+            queryTag == "cluster-memory-usage",
+            clusterMemoryUsageValue : value
+        )
+        clusterCpuUsage : Metric(
+            queryTag == "cluster-cpu-usage",
+            clusterCpuUsageValue : value
+        )
+        clusterFilesystemUsage : Metric(
+            queryTag == "cluster-filesystem-usage",
+            clusterFilesystemUsageValue : value
+        )
+		eval((clusterMemoryUsageValue < 50 &&
+            clusterCpuUsageValue < 50 &&
+            clusterFilesystemUsageValue < 50) &&
+		    cronChecker.checkPatternForSession("0 0/5 * ? * * *"))
   	then
         System.out.println("Processing 'scale-kubernetes-cluster-down'...");
 
