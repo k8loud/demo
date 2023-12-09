@@ -4,5 +4,9 @@ rule "test"
 	when
 		eval( true )
   	then
+  	    System.out.println("Processing 'test'...");
+
 		System.out.println("test rule triggered");
+
+        System.out.println("...Processed 'test'");
 end

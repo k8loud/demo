@@ -1,0 +1,55 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: loadtest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadtest-cpu
+  labels:
+    app: loadtest-cpu
+    name: loadtest-cpu
+    namespace: loadtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: loadtest-cpu
+  template:
+    metadata:
+      labels:
+        name: loadtest-cpu
+    spec:
+      containers:
+        - name: loadtest-cpu
+          image: busybox
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - /bin/sh
+            - -c
+            - "while true; do : ; done"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadtest-mem
+  labels:
+    app: loadtest-mem
+    name: loadtest-mem
+    namespace: loadtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: loadtest-mem
+  template:
+    metadata:
+      labels:
+        name: loadtest-mem
+    spec:
+      containers:
+        - name: loadtest-mem
+          image: k8loud/mem-hoarder
+          imagePullPolicy: "IfNotPresent"
