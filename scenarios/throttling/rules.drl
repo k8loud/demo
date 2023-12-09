@@ -17,7 +17,7 @@ rule "throttling-rule"
         )
         eval(sum > 90)
     then
-		System.out.println("Processing 'demo-app-metrics'...");
+		System.out.println("Processing 'throttling-rule'...");
 
         String[] ipParts = origin.split("\\.");
         remoteIpPrefix = ipParts[0] + "." + ipParts[1] + "." + ipParts[2] + "." + "0/24";
