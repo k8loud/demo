@@ -30,7 +30,7 @@ TARGET_RULES_PATH = $(TARGET_DIR)/$(RULES_FILENAME)
 help: ## show Makefile contents
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-run: ## run scenario with name passed as SCENARIO_NAME
+run: ## run scenario <SCENARIO_NAME>
 	@echo "Running scenario $(SCENARIO_NAME)"
 	make create-cm-file SOURCE_RULES_PATH=$(SCENARIO_DIR)/$(RULES_FILENAME)
 	make upload-rules
@@ -49,7 +49,7 @@ upload-rules:
 	@echo "Uploading rules"
 	kubectl replace -f $(TARGET_CONFIG_MAP_PATH)
 
-tear-down:
+tear-down: ## run tear_down script of scenario <SCENARIO_NAME>
 	@echo "Running tear_down script of scenario $(SCENARIO_NAME)"
 	$(SCENARIO_DIR)/$(TEAR_DOWN_FILENAME)
 
