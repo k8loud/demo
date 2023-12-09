@@ -28,8 +28,11 @@ The metric is used in the `most-popular-this-hour` rule, which:
 5. Submits a `NotifyCustomersAction`
 
 ## Results
-Customers received an e-mail
-![sockshop_notify_customers_2](https://github.com/k8loud/demo/assets/29145519/f8042b1b-3ece-4448-bc33-be48586c20f2)
-
 SockShop management can observe products popularity trends on a Grafana dashboard
 ![sockshop_notify_customers_1](https://github.com/k8loud/demo/assets/29145519/01ecfed2-dcc4-4e16-82fc-ab0d0e46adf3)
+
+Customers received an e-mail
+![image](https://github.com/k8loud/demo/assets/29145519/b0e758cc-605d-4848-a329-b4d7e3ceb7ba)
+
+The price in the shop has been updated
+![image](https://github.com/k8loud/demo/assets/29145519/2f4f18df-879a-4e89-b807-d6e5d91dc56a)
