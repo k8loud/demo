@@ -34,7 +34,6 @@ function rand_in_range {
 
 kubectl config set-context --current --namespace=sock-shop
 kubectl port-forward svc/front-end 8082:80 &
-kubectl port-forward svc/catalogue-db 33061:3306 &
 
 for c in $(seq 1 $CYCLES); do
   echo "Cycle $c / $CYCLES"

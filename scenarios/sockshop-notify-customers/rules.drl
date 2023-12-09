@@ -32,6 +32,10 @@ rule "most-popular-this-hour"
 			queryTag == "catalogue-queries-top1-1h",
 			queriedCount : value
 		)
+		catalogueDb : Metric(
+            queryTag == "catalogue-db",
+            catalogueDbIP : labels["cluster_ip"]
+		)
 		eval(cronChecker.checkPatternForSession("0 0 * ? * * *"))
 	then
 		System.out.println("Processing 'most-popular-this-hour'...");
@@ -51,8 +55,9 @@ rule "most-popular-this-hour"
         discountedPrice = price * (1 - discount);
         discountPriceQuery = String.format("update sock set price = %.2f where sock_id = '%s'",
             discountedPrice, ((CatalogueItem)item).getId());
+        connString = String.format("jdbc:mysql://%s:3306/socksdb?user=root&password=fake_password", catalogueDbIP);
         executionRS = MySqlUpdateAction.builder()
-            .connString("jdbc:mysql://localhost:33061/socksdb?user=root&password=fake_password")
+            .connString(connString)
             .query(discountPriceQuery)
             .dbService(usableServices.getMySQLService())
             .build()
@@ -60,11 +65,11 @@ rule "most-popular-this-hour"
 
         if (executionRS.getExitCode() == ExecutionExitCode.OK) {
             content = String.format("Dear customer!%n%nThis hour's most popular product has been viewed %.0f times" +
-                ", more details:%n%n%-14s: %s%n%-14s: %s%n%-14s: %s $%n%-14s: %d",
+                ", more details:%n%n%-14s: %s%n%-14s: %s%n%-14s: %s %n%-14s: %d",
                 queriedCount,
                 "name", ((CatalogueItem)item).getName(),
                 "description", ((CatalogueItem)item).getDescription(),
-                "price", String.format("%.2f -> %.2f (%.0f%% OFF)", price, discountedPrice, discount * 100),
+                "price", String.format("%.2f$ -> %.2f$ (%.0f%% OFF)", price, discountedPrice, discount * 100),
                 "in stock", ((CatalogueItem)item).getCount());
 
             // Couldn't make streams work
