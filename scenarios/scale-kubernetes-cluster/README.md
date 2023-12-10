@@ -53,14 +53,14 @@ Stages of the scenario
 
 ## Results
 ### Cluster
-![screenshot_2023-12-09_13-35-30](https://github.com/k8loud/demo/assets/29145519/96afa09e-76be-428e-9baf-aeabbe52b07a)
+![Cluster graphs](img/cluster_graphs.png)
 Horizontal lines on the graphs:
 - red - values should bounce off of them, not crossing to the red areas
 - yellow - threshold for scaling up
 - blue - threshold for scaling down
 
 ### Loadtest
-![screenshot_2023-12-09_13-57-15](https://github.com/k8loud/demo/assets/29145519/3d30c11d-7213-4620-9ec8-52896d9e19f6)
+![Loadtest graphs](img/loadtest_graphs.png)
 
 ### Comment
 #### One should keep in mind that all graphs should be contained in the area between red lines
