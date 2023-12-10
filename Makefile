@@ -32,20 +32,17 @@ help: ## show Makefile contents
 
 run: ## run scenario <SCENARIO_NAME>
 	@echo "Running scenario $(SCENARIO_NAME)"
-	make create-cm-file SOURCE_RULES_PATH=$(SCENARIO_DIR)/$(RULES_FILENAME)
 	make upload-rules
 	$(SCENARIO_DIR)/$(RUN_FILENAME)
 	make tear-down
 
-create-cm-file:
+upload-rules: ## upload rules of <SCENARIO_NAME>
 	@mkdir -p target
 	@echo "Creating a ConfigMap file: $(TARGET_CONFIG_MAP_PATH)"
 	@echo "$$CONFIG_MAP_HEADER" > $(TARGET_CONFIG_MAP_PATH)
-	cp $(SOURCE_RULES_PATH) $(TARGET_RULES_PATH)
+	cp $(SCENARIO_DIR)/$(RULES_FILENAME) $(TARGET_RULES_PATH)
 	sed -i 's/^/    /' $(TARGET_RULES_PATH) # assuming tab = 4 spaces
 	cat $(TARGET_RULES_PATH) >> $(TARGET_CONFIG_MAP_PATH)
-
-upload-rules:
 	@echo "Uploading rules"
 	kubectl replace -f $(TARGET_CONFIG_MAP_PATH)
 
