@@ -17,7 +17,7 @@ rule "throttling-rule"
         )
         eval(sum > 90 && cronChecker.checkPatternForSession("0 0/1 * ? * * *"))
     then
-		System.out.println("Processing 'throttling-rule'...");
+        System.out.println("Processing 'throttling-rule'...");
 
         String[] ipParts = origin.split("\\.");
         remoteIpPrefix = ipParts[0] + "." + ipParts[1] + "." + ipParts[2] + "." + "0/24";
@@ -35,5 +35,5 @@ rule "throttling-rule"
             .build()
             .execute();
 
-		System.out.println("...Processed 'throttling-rule'");
+        System.out.println("...Processed 'throttling-rule'");
 end

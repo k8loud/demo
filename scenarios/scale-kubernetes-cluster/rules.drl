@@ -13,7 +13,7 @@ global org.k8loud.executor.drools.UsableServices usableServices;
 global org.k8loud.executor.drools.CronChecker cronChecker;
 
 rule "scale-kubernetes-cluster-up"
-	when
+    when
         clusterMemoryUsage : Metric(
             queryTag == "cluster-memory-usage",
             clusterMemoryUsageValue : value
@@ -26,35 +26,35 @@ rule "scale-kubernetes-cluster-up"
             queryTag == "cluster-filesystem-usage",
             clusterFilesystemUsageValue : value
         )
-		eval((clusterMemoryUsageValue > 70 ||
-		    clusterCpuUsageValue > 70 ||
-		    clusterFilesystemUsageValue > 70) &&
-		    cronChecker.checkPatternForSession("0 0/2 * ? * * *"))
-  	then
+        eval((clusterMemoryUsageValue > 70 ||
+            clusterCpuUsageValue > 70 ||
+            clusterFilesystemUsageValue > 70) &&
+            cronChecker.checkPatternForSession("0 0/2 * ? * * *"))
+    then
         System.out.println("Processing 'scale-kubernetes-cluster-up'...");
 
         AddInstanceAction.builder()
-        	.region("RegionOne")
-        	.name("kube-worker-auto-scaled")
-        	.imageId("70a1dc73-f794-439f-8dd2-9e5cf8a73d5a")
-        	.flavorId("414a6a89-57c3-4331-9a05-0a53fc9a7d02")
-        	.keypairName("default")
-        	.securityGroup(null)
-			.userData("#!/bin/bash\nsudo apt -y install nmap\nsudo cp /home/ubuntu/kubernetes-lab-setup/configs/" +
-				"join_cluster.service /etc/systemd/system/join_cluster.service\nchmod +x /home/ubuntu/kubernetes-lab-" +
-			 	"setup/scripts/kube_setup/join_cluster.sh\nsudo systemctl enable join_cluster.service\nsudo systemctl" +
-			 	" start join_cluster.service")
-			.count(1)
-			.waitActiveSec(1)
-			.openstackService(usableServices.getOpenstackService())
-			.build()
-			.execute();
+            .region("RegionOne")
+            .name("kube-worker-auto-scaled")
+            .imageId("70a1dc73-f794-439f-8dd2-9e5cf8a73d5a")
+            .flavorId("414a6a89-57c3-4331-9a05-0a53fc9a7d02")
+            .keypairName("default")
+            .securityGroup(null)
+            .userData("#!/bin/bash\nsudo apt -y install nmap\nsudo cp /home/ubuntu/kubernetes-lab-setup/configs/" +
+                "join_cluster.service /etc/systemd/system/join_cluster.service\nchmod +x /home/ubuntu/kubernetes-lab-" +
+                "setup/scripts/kube_setup/join_cluster.sh\nsudo systemctl enable join_cluster.service\nsudo systemctl" +
+                " start join_cluster.service")
+            .count(1)
+            .waitActiveSec(1)
+            .openstackService(usableServices.getOpenstackService())
+            .build()
+            .execute();
 
         System.out.println("...Processed 'scale-kubernetes-cluster-up'");
 end
 
 rule "scale-kubernetes-cluster-down"
-	when
+    when
         clusterMemoryUsage : Metric(
             queryTag == "cluster-memory-usage",
             clusterMemoryUsageValue : value
@@ -67,48 +67,48 @@ rule "scale-kubernetes-cluster-down"
             queryTag == "cluster-filesystem-usage",
             clusterFilesystemUsageValue : value
         )
-		eval((clusterMemoryUsageValue < 50 &&
+        eval((clusterMemoryUsageValue < 50 &&
             clusterCpuUsageValue < 50 &&
             clusterFilesystemUsageValue < 50) &&
-		    cronChecker.checkPatternForSession("0 0/2 * ? * * *"))
-  	then
+            cronChecker.checkPatternForSession("0 0/2 * ? * * *"))
+    then
         System.out.println("Processing 'scale-kubernetes-cluster-down'...");
 
         // 1. List nodes
         executionRS = GetServerNamesAction.builder()
-        	.region("RegionOne")
-        	.namePattern("kube-worker-auto-scaled-.*")
-        	.openstackService(usableServices.getOpenstackService())
-        	.build()
-        	.execute();
+            .region("RegionOne")
+            .namePattern("kube-worker-auto-scaled-.*")
+            .openstackService(usableServices.getOpenstackService())
+            .build()
+            .execute();
 
-		if (executionRS.getExitCode() == ExecutionExitCode.OK) {
-			serverNames = (String) executionRS.getAdditionalData().get("serverNames");
-			if (serverNames.length() == 0) {
-				System.out.println("There are no nodes to be scaled down");
-			} else {
-				nodeName = serverNames.split(",")[0];
-				// 2. Send detach node commands to the master node
-				executionRS = DetachNodeFromKubernetesClusterAction.builder()
-					.host("<MASTER_IP>")
-					.port(22)
-					.privateKey("<MASTER_PKEY>")
-					.user("ubuntu")
-					.nodeName(nodeName)
-					.commandExecutionService(usableServices.getCommandExecutionService())
-					.build()
-					.execute();
+        if (executionRS.getExitCode() == ExecutionExitCode.OK) {
+            serverNames = (String) executionRS.getAdditionalData().get("serverNames");
+            if (serverNames.length() == 0) {
+                System.out.println("There are no nodes to be scaled down");
+            } else {
+                nodeName = serverNames.split(",")[0];
+                // 2. Send detach node commands to the master node
+                executionRS = DetachNodeFromKubernetesClusterAction.builder()
+                    .host("<MASTER_IP>")
+                    .port(22)
+                    .privateKey("<MASTER_PKEY>")
+                    .user("ubuntu")
+                    .nodeName(nodeName)
+                    .commandExecutionService(usableServices.getCommandExecutionService())
+                    .build()
+                    .execute();
                 if (executionRS.getExitCode() == ExecutionExitCode.OK) {
-					// 3. Delete the detached node VM
-					DeleteInstanceAction.builder()
-						.region("RegionOne")
-						.namePattern(nodeName)
-						.openstackService(usableServices.getOpenstackService())
-						.build()
-						.execute();
+                    // 3. Delete the detached node VM
+                    DeleteInstanceAction.builder()
+                        .region("RegionOne")
+                        .namePattern(nodeName)
+                        .openstackService(usableServices.getOpenstackService())
+                        .build()
+                        .execute();
                 }
-			}
+            }
         }
 
-		System.out.println("...Processed 'scale-kubernetes-cluster-down'");
+        System.out.println("...Processed 'scale-kubernetes-cluster-down'");
 end
