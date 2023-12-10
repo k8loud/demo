@@ -5,11 +5,13 @@ import org.apache.http.HttpResponse
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder;
 import org.k8loud.executor.actions.cnapp.sockshop.NotifyCustomersAction
+import org.k8loud.executor.actions.cnapp.http.CreateSessionAction
 import java.util.Arrays
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import org.k8loud.executor.actions.cnapp.db.mysql.MySqlUpdateAction
 import org.k8loud.executor.model.ExecutionExitCode;
+import org.k8loud.executor.http.HTTPSession
 
 global org.k8loud.executor.drools.UsableServices usableServices;
 global org.k8loud.executor.drools.CronChecker cronChecker;
@@ -43,7 +45,14 @@ rule "most-popular-this-hour"
 		sockShopUrl = "http://" + catalogueQueries.getLabels().get("instance");
 		urlSuplement = catalogueQueries.getLabels().get("route").substring(1);
 
-        response = usableServices.getHttpService().createSession().doGet(sockShopUrl, urlSuplement);
+        httpSession = (HTTPSession) CreateSessionAction.builder()
+            .httpService(usableServices.getHttpService())
+            .build()
+            .execute()
+            .getAdditionalData()
+            .get("session");
+        response = httpSession
+            .doGet(sockShopUrl, urlSuplement);
 
 		itemJSON = EntityUtils.toString(response.getEntity());
 		item = new GsonBuilder().create().

@@ -23,9 +23,10 @@ To achieve this goal the `catalogue-queries-top1-1h` metric has been created:
 The metric is used in the `most-popular-this-hour` rule, which:
 1. Awaits for the aforementioned metric
 2. Checks the time constraint which will pass only once an hour
-3. Gathers the required information and processes it
-4. Submits a `MySqlUpdateAction` that updates the product's price
-5. Submits a `NotifyCustomersAction`
+3. Submits a `CreateSessionAction` that creates an HTTP session
+4. Retrieves the product's details by making a GET request with the `HTTPSession` object returned by the previous action
+5. Submits a `MySqlUpdateAction` that updates the product's price
+6. Submits a `NotifyCustomersAction`
 
 ## Results
 SockShop management can observe products popularity trends on a Grafana dashboard
