@@ -2,8 +2,8 @@ import io.github.hephaestusmetrics.model.metrics.Metric;
 import java.util.List
 import org.k8loud.executor.actions.openstack.IpThrottleAction
 
-global org.k8loud.executor.model.ActionList actions;
 global org.k8loud.executor.drools.UsableServices usableServices;
+global org.k8loud.executor.drools.CronChecker cronChecker;
 
 dialect "mvel"
 
@@ -15,14 +15,14 @@ rule "throttling-rule"
             origin : labels["origin"],
             sum : value
         )
-        eval(sum > 90)
+        eval(sum > 90 && cronChecker.checkPatternForSession("0 0/1 * ? * * *"))
     then
-		System.out.println("Processing 'demo-app-metrics'...");
+		System.out.println("Processing 'throttling-rule'...");
 
         String[] ipParts = origin.split("\\.");
         remoteIpPrefix = ipParts[0] + "." + ipParts[1] + "." + ipParts[2] + "." + "0/24";
 
-        actions.add(IpThrottleAction.builder()
+        IpThrottleAction.builder()
             .region("RegionOne")
             .serverId("c2f615ca-9f6a-407a-a32c-dbdb64109fa4")
             .ethertype("IPv4")
@@ -32,7 +32,8 @@ rule "throttling-rule"
             .portRangeMax(80)
             .secDuration(1000)
             .openstackService(usableServices.getOpenstackService())
-            .build());
+            .build()
+            .execute();
 
-		System.out.println("...Processed 'demo-app-metrics'");
+		System.out.println("...Processed 'throttling-rule'");
 end

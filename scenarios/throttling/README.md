@@ -1,9 +1,15 @@
 # Throttling
 ## Requirements
 
+### Metrics
+```
+demo-app-last-minute-rq-count-per-origin = floor(increase(demo_app_metric[1m]))
+```
+
+### Other
+
 1. [Demo application](https://github.com/k8loud/demo-app) is deployed on node `kube-worker-0`
-2. `demo_app_metric` is available in prometheus (should be OK if deployed from forked [microservices-demo](https://github.com/k8loud/microservices-demo))
-3. [Simple flask app](https://github.com/k8loud/demo-app/blob/main/forward.py) is running on `kube-worker-0` with properly changed `target_url` (ClusterIP svc with demo-app)
+3. [Simple flask app](https://github.com/k8loud/demo-app/blob/main/forward.py) is running on `kube-worker-0` with properly changed `target_url` (demo-app svc ClusterIP)
 4. Add security group rule that allows inbound http from your device (preferably with /16 mask)
 
 ## Description
@@ -23,15 +29,15 @@ in given time period - that is why `demo-app-metric` was created.
 ### Security Rule changes
 
 Before rule execution
-![Before_rule_execution](img.png)
+![Before_rule_execution](img/security_group_before_rule_execution.png)
 
 After rule Execution
-![After_rule_execution](img_1.png)
+![After_rule_execution](img/security_group_after_rule_execution.png)
 
 ### Requests count
 
 With added throttling rule
-![With_rule_execution](img_2.png)
+![With_rule_execution](img/rq_count_per_minute_with_rule.png)
 
 Without throttling rule
-![Without_rule_execution](img_3.png)
+![Without_rule_execution](img/rq_count_per_minute_without_rule.png)
