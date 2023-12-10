@@ -65,7 +65,7 @@ Horizontal lines on the graphs:
 ### Comment
 #### One should keep in mind that all graphs should be contained in the area between red lines
 Even if it's reasonable to scale based on one metric it may not be performed because of another.
-Take `Cluster filesystem usage` as an example. It resides in the red area most of the time but it can't be scaled down because doing so would affect other metrics.
+Take `Cluster filesystem usage` as an example. It resides below the blue line most of the time but it can't be scaled down because doing so would affect other metrics.
 
 #### We maintain a minimum number of nodes which prevents scaling down
 The initial load of all metrics reside in the bottom red area so during the reset phases (load-test replicas are 0) it seems that the cluster can be scaled down but it can't.
