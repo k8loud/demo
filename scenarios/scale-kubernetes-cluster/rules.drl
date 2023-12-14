@@ -1,4 +1,4 @@
-import io.github.hephaestusmetrics.model.metrics.Metric;
+import io.github.hephaestusmetrics.model.metrics.Metric
 import org.k8loud.executor.actions.openstack.AddInstanceAction
 import org.k8loud.executor.actions.openstack.GetServerNamesAction
 import org.k8loud.executor.actions.command.CommandAction
@@ -6,6 +6,7 @@ import org.k8loud.executor.actions.command.CustomScriptAction
 import org.k8loud.executor.actions.command.DetachNodeFromKubernetesClusterAction
 import org.k8loud.executor.actions.openstack.DeleteInstanceAction
 import org.k8loud.executor.model.ExecutionExitCode
+import java.util.List
 
 dialect "mvel"
 
@@ -83,11 +84,11 @@ rule "scale-kubernetes-cluster-down"
             .execute();
 
         if (executionRS.getExitCode() == ExecutionExitCode.OK) {
-            serverNames = (String) executionRS.getAdditionalData().get("serverNames");
-            if (serverNames.length() == 0) {
+            serverNames = (List<String>) executionRS.getAdditionalData().get("serverNames");
+            if (serverNames.size() == 0) {
                 System.out.println("There are no nodes to be scaled down");
             } else {
-                nodeName = serverNames.split(",")[0];
+                nodeName = (String) serverNames.get(0);
                 // 2. Send detach node commands to the master node
                 executionRS = DetachNodeFromKubernetesClusterAction.builder()
                     .host("<MASTER_IP>")
