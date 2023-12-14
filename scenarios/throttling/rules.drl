@@ -1,4 +1,4 @@
-import io.github.hephaestusmetrics.model.metrics.Metric;
+import io.github.hephaestusmetrics.model.metrics.Metric
 import java.util.List
 import org.k8loud.executor.actions.openstack.IpThrottleAction
 

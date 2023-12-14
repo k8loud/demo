@@ -1,4 +1,4 @@
-import io.github.hephaestusmetrics.model.metrics.Metric;
+import io.github.hephaestusmetrics.model.metrics.Metric
 import java.util.List
 import java.util.Arrays
 import java.util.stream.Collectors
@@ -6,12 +6,12 @@ import java.util.stream.Stream
 import org.apache.http.util.EntityUtils
 import org.apache.http.HttpResponse
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder;
+import com.google.gson.GsonBuilder
 import org.k8loud.executor.actions.cnapp.sockshop.NotifyCustomersAction
 import org.k8loud.executor.actions.cnapp.http.CreateSessionAction
 import org.k8loud.executor.actions.cnapp.db.mysql.MySqlUpdateAction
-import org.k8loud.executor.model.ExecutionExitCode;
-import org.k8loud.executor.http.HTTPSession
+import org.k8loud.executor.model.ExecutionExitCode
+import org.k8loud.executor.cnapp.http.HTTPSession
 
 global org.k8loud.executor.drools.UsableServices usableServices;
 global org.k8loud.executor.drools.CronChecker cronChecker;
