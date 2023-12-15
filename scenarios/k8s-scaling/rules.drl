@@ -22,7 +22,8 @@ rule "scale-front-end-up"
                     .resourceType("Deployment")
                     .resourceName("front-end")
                     .replicas(1)
-                    .build();
+                    .build()
+                    .execute();
 end
 
 rule "scale-front-end-down"
@@ -41,7 +42,8 @@ rule "scale-front-end-down"
                 .resourceType("Deployment")
                 .resourceName("front-end")
                 .replicas(-1)
-                .build();
+                .build()
+                .execute();
 end
 
 rule "scale-user-up"
@@ -60,7 +62,8 @@ rule "scale-user-up"
                     .resourceType("Deployment")
                     .resourceName("user")
                     .replicas(1)
-                    .build();
+                    .build()
+                    .execute();
 end
 
 rule "scale-user-down"
@@ -80,4 +83,5 @@ rule "scale-user-down"
                     .resourceName("user")
                     .replicas(-1)
                     .build()
+                    .execute();
 end
