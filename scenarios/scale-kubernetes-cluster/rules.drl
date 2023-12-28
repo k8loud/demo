@@ -84,7 +84,7 @@ rule "scale-kubernetes-cluster-down"
             .execute();
 
         if (executionRS.getExitCode() == ExecutionExitCode.OK) {
-            serverNames = (List<String>) executionRS.getAdditionalData().get("serverNames");
+            serverNames = (List) executionRS.getAdditionalData().get("serverNames");
             if (serverNames.size() == 0) {
                 System.out.println("There are no nodes to be scaled down");
             } else {
