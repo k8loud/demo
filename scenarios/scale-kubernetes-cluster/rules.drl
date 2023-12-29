@@ -113,12 +113,12 @@ rule "scale-kubernetes-cluster-down"
                             .build()
                             .execute();
                     }
-                }
-                if (executionRS.getExitCode() == ExecutionExitCode.OK) {
-                    // break
-                    nodeIdx = serverNames.size();
-                } else {
-                    nodeIdx = nodeIdx + 1;
+                    if (executionRS.getExitCode() == ExecutionExitCode.OK) {
+                        // break
+                        nodeIdx = serverNames.size();
+                    } else {
+                        nodeIdx = nodeIdx + 1;
+                    }
                 }
             }
         }

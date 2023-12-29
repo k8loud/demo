@@ -36,12 +36,12 @@ STAGE_DURATIONS_S=(
   240
   420
   180
-  600  # reset
+  900  # reset
   360
   240
   420
   180
-  600  # reset
+  900  # reset
   360
   360
   360
