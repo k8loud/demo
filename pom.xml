@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.k8loud</groupId>
             <artifactId>themis-executor</artifactId>
-            <version>0.0.4.2-command-separate-outputs</version>
+            <version>0.0.4.3</version>
         </dependency>
     </dependencies>
 </project>
