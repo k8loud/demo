@@ -88,25 +88,37 @@ rule "scale-kubernetes-cluster-down"
             if (serverNames.size() == 0) {
                 System.out.println("There are no nodes to be scaled down");
             } else {
-                nodeName = (String) serverNames.get(0);
-                // 2. Send detach node commands to the master node
-                executionRS = DetachNodeFromKubernetesClusterAction.builder()
-                    .host("<MASTER_IP>")
-                    .port(22)
-                    .privateKey("<MASTER_PKEY>")
-                    .user("ubuntu")
-                    .nodeName(nodeName)
-                    .commandExecutionService(usableServices.getCommandExecutionService())
-                    .build()
-                    .execute();
-                if (executionRS.getExitCode() == ExecutionExitCode.OK) {
-                    // 3. Delete the detached node VM
-                    DeleteInstanceAction.builder()
-                        .region("RegionOne")
-                        .namePattern(nodeName)
-                        .openstackService(usableServices.getOpenstackService())
+                nodeIdx = 0;
+                while (nodeIdx < serverNames.size()) {
+                    nodeName = (String) serverNames.get(nodeIdx);
+                    // 2. Send detach node commands to the master node
+                    executionRS = DetachNodeFromKubernetesClusterAction.builder()
+                        .host("<MASTER_IP>")
+                        .port(22)
+                        .privateKey("<MASTER_PKEY>")
+                        .user("ubuntu")
+                        .nodeName(nodeName)
+                        .commandExecutionService(usableServices.getCommandExecutionService())
                         .build()
                         .execute();
+                    if (executionRS.getExitCode() == ExecutionExitCode.OK ||
+                        ("Error from server (NotFound): nodes \"" + nodeName + "\" not found\n")
+                        .equals((String) executionRS.getAdditionalData().get("stderr"))) {
+                        // 3. OK: Delete the detached node VM
+                        // NOT_OK: Delete the node VM because it's either redundant or tainted
+                        DeleteInstanceAction.builder()
+                            .region("RegionOne")
+                            .namePattern(nodeName)
+                            .openstackService(usableServices.getOpenstackService())
+                            .build()
+                            .execute();
+                    }
+                    if (executionRS.getExitCode() == ExecutionExitCode.OK) {
+                        // break
+                        nodeIdx = serverNames.size();
+                    } else {
+                        nodeIdx = nodeIdx + 1;
+                    }
                 }
             }
         }
