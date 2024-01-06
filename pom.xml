@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.k8loud</groupId>
             <artifactId>themis-executor</artifactId>
-            <version>0.0.4.3</version>
+            <version>0.0.4.4</version>
         </dependency>
     </dependencies>
 </project>
