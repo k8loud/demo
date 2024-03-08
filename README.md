@@ -1,5 +1,5 @@
 # Scenarios
-- [Scale Kubernetes cluster](https://github.com/k8loud/demo/tree/main/scenarios/scale-kubernetes-cluster)
-- [Throttling](https://github.com/k8loud/demo/tree/main/scenarios/throttling)
-- [SockShop notify customers](https://github.com/k8loud/demo/tree/main/scenarios/sockshop-notify-customers)
-- [Scale Kubernetes deployments](https://github.com/k8loud/demo/tree/main/scenarios/k8s-scaling)
+- [Scale Kubernetes cluster](scenarios/scale-kubernetes-cluster)
+- [Throttling](scenarios/throttling)
+- [SockShop notify customers](scenarios/sockshop-notify-customers)
+- [Scale Kubernetes deployments](scenarios/k8s-scaling)
