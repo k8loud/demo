@@ -1,17 +1,20 @@
-# shellcheck disable=SC2046
-echo "$(date +'%Y-%m-%d %T') start test"
+#!/bin/bash
 
-curr=0
-for ((i=1; i<=6; i++)); do
-    ((curr++))
-    echo "$(date +'%Y-%m-%d %T') Scaling loadtest to $curr"
-    kubectl scale deploy load-test -n loadtest --replicas="$curr"
+NAMESPACE="loadtest"
+DEPLOYMENT="load-test"
+SLEEP_DURATION_S=300
 
+scale() {
+    local replicas=$1
+    echo "$(date +'%Y-%m-%d %T') scaling $DEPLOYMENT to $replicas"
+    kubectl scale deploy "$DEPLOYMENT" -n "$NAMESPACE" --replicas="$replicas"
+    sleep "$SLEEP_DURATION_S"
+}
 
-    sleep 180
+for replicas in {1..5}; do
+    scale "$replicas"
 done
-sleep 240
-echo scaling down
-kubectl scale deploy load-test -n loadtest --replicas=0
-sleep 60
-echo "$(date +'%Y-%m-%d %T') test finished"
+
+for replicas in 3 1 0; do
+    scale "$replicas"
+done
