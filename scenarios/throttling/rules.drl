@@ -1,6 +1,7 @@
 import io.github.hephaestusmetrics.model.metrics.Metric
 import java.util.List
 import org.k8loud.executor.actions.openstack.IpThrottleAction
+import java.time.Instant
 
 global org.k8loud.executor.drools.UsableServices usableServices;
 global org.k8loud.executor.drools.CronChecker cronChecker;
@@ -17,6 +18,7 @@ rule "throttling-rule"
         )
         eval(sum > 90 && cronChecker.checkPatternForSession("0 0/1 * ? * * *"))
     then
+        Instant startTime = Instant.now()
         System.out.println("Processing 'throttling-rule'...");
 
         String[] ipParts = origin.split("\\.");
@@ -36,4 +38,5 @@ rule "throttling-rule"
             .execute();
 
         System.out.println("...Processed 'throttling-rule'");
+        usableServices.getRuleTimeService().reportTime(startTime, "Throttling")
 end
